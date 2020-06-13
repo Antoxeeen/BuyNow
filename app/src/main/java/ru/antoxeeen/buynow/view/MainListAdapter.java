@@ -41,7 +41,7 @@ class MainListAdapter extends RecyclerView.Adapter<MainListAdapter.MainListHolde
         notifyDataSetChanged();
     }
 
-    class MainListHolder extends RecyclerView.ViewHolder{
+    static class MainListHolder extends RecyclerView.ViewHolder{
         private TextView textViewTitle;
 
         public MainListHolder(@NonNull View itemView) {
