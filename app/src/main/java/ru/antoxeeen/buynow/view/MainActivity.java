@@ -15,7 +15,6 @@ import android.widget.Toast;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     private MainListsViewModel viewModel;
 
     @Override
