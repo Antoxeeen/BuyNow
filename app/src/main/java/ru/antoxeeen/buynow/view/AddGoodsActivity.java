@@ -13,8 +13,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class AddGoodsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_goods);
 
         editText_listName = findViewById(R.id.edit_text_title);
-        editText_listName = findViewById(R.id.edit_text_add_goods);
+        editText_goods = findViewById(R.id.edit_text_add_goods);
         imageView_add_goods = findViewById(R.id.image_view_add_goods);
 
         recyclerView = findViewById(R.id.goods_recycler_view);
@@ -59,10 +61,28 @@ public class AddGoodsActivity extends AppCompatActivity {
             }
         });
 
+        imageView_add_goods.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                add_goods();
+            }
+        });
+
+    }
+
+    private void add_goods(){
+        String goods_name = editText_goods.getText().toString();
+        String title_name = editText_listName.getText().toString();
+        goodsListViewModel.insertGoodsList(new GoodsList(goods_name,title_name));
     }
 
     private void save_goods(){
         String list_name = editText_listName.getText().toString();
+        if (list_name == null || list_name.isEmpty()){
+            Toast.makeText(this, "Введите название для списка", Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
         Intent data = new Intent();
         data.putExtra(EXTRA_TITLE, list_name);
         setResult(RESULT_OK, data);

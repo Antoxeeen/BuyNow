@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == ADD_GOODS_REQUEST && resultCode == RESULT_OK){
-            String title = data.getStringExtra(AddGoodsActivity.EXTRA_TITLE);
+            String title = data != null ? data.getStringExtra(AddGoodsActivity.EXTRA_TITLE) : null;
             MainList mainList = new MainList(title);
             viewModel.insertMainList(mainList);
         }
