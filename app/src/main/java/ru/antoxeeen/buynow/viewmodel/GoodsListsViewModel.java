@@ -9,9 +9,9 @@ import androidx.lifecycle.LiveData;
 import ru.antoxeeen.buynow.repository.GoodsList;
 import ru.antoxeeen.buynow.repository.GoodsRepository;
 
-class GoodsListsViewModel extends AndroidViewModel {
+public class GoodsListsViewModel extends AndroidViewModel {
     private GoodsRepository goodsRepository;
-    private LiveData<List<String>> allGoods;
+    private LiveData<List<GoodsList>> allGoods;
 
     public GoodsListsViewModel(@NonNull Application application, String listName) {
         super(application);
@@ -32,7 +32,7 @@ class GoodsListsViewModel extends AndroidViewModel {
         goodsRepository.deleteGoodsList(goodsList);
     }
 
-    public LiveData<List<String>> getAllGoodsList(){
+    public LiveData<List<GoodsList>> getAllGoodsList(){
         return allGoods;
     }
 }

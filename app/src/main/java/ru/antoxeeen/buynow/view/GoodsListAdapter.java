@@ -12,9 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.antoxeeen.buynow.R;
 import ru.antoxeeen.buynow.repository.GoodsList;
+import ru.antoxeeen.buynow.repository.MainList;
 
 class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.GoodsListHolder> {
-    private List<GoodsList> goodsListList = new ArrayList<>();
+    private List<GoodsList> goodsList = new ArrayList<>();
 
     @NonNull
     @Override
@@ -26,13 +27,18 @@ class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.GoodsListHo
 
     @Override
     public void onBindViewHolder(@NonNull GoodsListHolder holder, int position) {
-        GoodsList currentGoodsList = goodsListList.get(position);
+        GoodsList currentGoodsList = goodsList.get(position);
         holder.textViewGoods.setText(currentGoodsList.getGoods());
+    }
+
+    public void setList(List<GoodsList> goodsLists){
+        this.goodsList = goodsLists;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return goodsListList.size();
+        return goodsList.size();
     }
 
     static class GoodsListHolder extends RecyclerView.ViewHolder {

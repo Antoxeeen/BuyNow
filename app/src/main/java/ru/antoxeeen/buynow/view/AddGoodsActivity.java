@@ -2,17 +2,24 @@ package ru.antoxeeen.buynow.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.antoxeeen.buynow.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import java.util.List;
+
+import ru.antoxeeen.buynow.repository.GoodsList;
+import ru.antoxeeen.buynow.viewmodel.GoodsListsViewModel;
 
 public class AddGoodsActivity extends AppCompatActivity {
 
@@ -20,6 +27,9 @@ public class AddGoodsActivity extends AppCompatActivity {
     private EditText editText_goods;
     private ImageView imageView_add_goods;
     private RecyclerView recyclerView;
+    private GoodsListsViewModel goodsListViewModel;
+    public static final String EXTRA_TITLE =
+            "ru.antoxeeen.buynow.view.EXTRA_TITLE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +44,29 @@ public class AddGoodsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
+        final GoodsListAdapter adapter = new GoodsListAdapter();
+        recyclerView.setAdapter(adapter);
+
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
         setTitle("Add goods");
 
+        goodsListViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
+                .create(GoodsListsViewModel.class);
+        goodsListViewModel.getAllGoodsList().observe(this, new Observer<List<GoodsList>>() {
+            @Override
+            public void onChanged(List<GoodsList> goodsLists) {
+                adapter.setList(goodsLists);
+            }
+        });
 
     }
 
     private void save_goods(){
         String list_name = editText_listName.getText().toString();
+        Intent data = new Intent();
+        data.putExtra(EXTRA_TITLE, list_name);
+        setResult(RESULT_OK, data);
+        finish();
     }
 
     @Override
@@ -60,6 +85,8 @@ public class AddGoodsActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
+
+
+
 }

@@ -21,8 +21,8 @@ interface GoodsListDao {
     @Delete
     void delete(GoodsList goodsList);
 
-    @Query("SELECT goods FROM table_goodsList WHERE listName = :listName")
-    LiveData<List<String>> getAllGoods(String listName);
+    @Query("SELECT * FROM table_goodsList WHERE listName = :listName")
+    LiveData<List<GoodsList>> getAllGoods(String listName);
 
 
 }

@@ -11,8 +11,7 @@ import androidx.lifecycle.LiveData;
 public class GoodsRepository {
 
     GoodsListDao goodsListDao;
-    private LiveData<List<String>> goods;
-    String listName;
+    private LiveData<List<GoodsList>> goods;
 
     public GoodsRepository(Application application, String listName) {
         GoodsListDatabase database = GoodsListDatabase.getInstance(application);
@@ -32,7 +31,7 @@ public class GoodsRepository {
         new DeleteGoodsListAsyncTask(goodsListDao).execute(goodsList);
     }
 
-    public LiveData<List<String>> getAllGoods(){
+    public LiveData<List<GoodsList>> getAllGoods(){
         return goods;
     }
 
