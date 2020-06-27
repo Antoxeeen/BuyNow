@@ -6,7 +6,7 @@ import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "table_lists", indices = {@Index(value = {"name"}, unique = true)})
+@Entity(tableName = "table_lists")
 public class MainList {
 
     @PrimaryKey(autoGenerate = true)

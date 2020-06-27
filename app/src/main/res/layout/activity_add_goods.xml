@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.AddGoodsActivity">
+    tools:context=".view.AddEditGoodsActivity">
 
     <EditText
         android:id="@+id/edit_text_title"
@@ -33,7 +33,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:singleLine="true" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/image_view_add_goods"
             android:padding="5dp"
             android:layout_width="wrap_content"
@@ -41,7 +41,14 @@
             android:layout_alignTop="@+id/edit_text_add_goods"
             android:layout_alignBottom="@+id/edit_text_add_goods"
             android:layout_alignEnd="@+id/edit_text_add_goods"
-            android:src="@drawable/ic_baseline_add_box_24"/>
+            android:src="@drawable/ic_baseline_add_box_24"/>-->
+        <Button
+            android:id="@+id/add_goods_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/edit_text_add_goods"
+            android:layout_alignBottom="@+id/edit_text_add_goods"
+            android:layout_alignEnd="@+id/edit_text_add_goods"/>
 
     </RelativeLayout>
 

@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey;
 
 import static androidx.room.ForeignKey.CASCADE;
 
-@Entity(foreignKeys = {@ForeignKey(entity = MainList.class, parentColumns = "name",
-        childColumns = "listName", onDelete = CASCADE, onUpdate = CASCADE)}, tableName = "table_goodsList")
+@Entity(foreignKeys = {@ForeignKey(entity = MainList.class, parentColumns = "id",
+        childColumns = "listId", onDelete = CASCADE, onUpdate = CASCADE)}, tableName = "table_goodsList")
 public class GoodsList {
 
     @PrimaryKey(autoGenerate = true)
@@ -15,15 +15,15 @@ public class GoodsList {
 
     private String goods;
 
-    private String listName;
+    private int listId;
 
-    public GoodsList(String goods, String listName) {
+    public GoodsList(String goods, int listId) {
         this.goods = goods;
-        this.listName = listName;
+        this.listId = listId;
     }
 
-    public String getListName() {
-        return listName;
+    public int getListId() {
+        return listId;
     }
 
     public int getId() {

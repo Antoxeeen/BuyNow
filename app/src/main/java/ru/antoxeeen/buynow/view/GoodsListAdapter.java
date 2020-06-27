@@ -31,7 +31,7 @@ class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.GoodsListHo
         holder.textViewGoods.setText(currentGoodsList.getGoods());
     }
 
-    public void setList(List<GoodsList> goodsLists){
+    public void setList(List<GoodsList> goodsLists) {
         this.goodsList = goodsLists;
         notifyDataSetChanged();
     }
@@ -41,7 +41,7 @@ class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.GoodsListHo
         return goodsList.size();
     }
 
-    static class GoodsListHolder extends RecyclerView.ViewHolder {
+    class GoodsListHolder extends RecyclerView.ViewHolder {
         private TextView textViewGoods;
 
         public GoodsListHolder(@NonNull View itemView) {

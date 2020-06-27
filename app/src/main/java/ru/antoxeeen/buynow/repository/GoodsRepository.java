@@ -13,10 +13,10 @@ public class GoodsRepository {
     GoodsListDao goodsListDao;
     private LiveData<List<GoodsList>> goods;
 
-    public GoodsRepository(Application application, String listName) {
+    public GoodsRepository(Application application, int listId) {
         GoodsListDatabase database = GoodsListDatabase.getInstance(application);
         goodsListDao = database.goodsListDao();
-        goods = goodsListDao.getAllGoods(listName);
+        goods = goodsListDao.getAllGoods(listId);
     }
 
     public void insertGoodsList(GoodsList goodsList){

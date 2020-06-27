@@ -12,12 +12,17 @@ import ru.antoxeeen.buynow.repository.GoodsRepository;
 public class GoodsListsViewModel extends AndroidViewModel {
     private GoodsRepository goodsRepository;
     private LiveData<List<GoodsList>> allGoods;
+    private int listId;
 
-    public GoodsListsViewModel(@NonNull Application application, String listName) {
+    public GoodsListsViewModel(@NonNull Application application) {
         super(application);
-        goodsRepository = new GoodsRepository(application, listName);
+        goodsRepository = new GoodsRepository(application, listId);
         allGoods = goodsRepository.getAllGoods();
 
+    }
+
+    public void setListId(int listId) {
+        this.listId = listId;
     }
 
     public void insertGoodsList(GoodsList goodsList){
