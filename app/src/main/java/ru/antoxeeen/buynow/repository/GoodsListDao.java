@@ -21,8 +21,12 @@ interface GoodsListDao {
     @Delete
     void delete(GoodsList goodsList);
 
-    @Query("SELECT * FROM table_goodsList WHERE listId = :listId")
-    LiveData<List<GoodsList>> getAllGoods(int listId);
+    @Query("DELETE FROM table_goodsList")
+    void deleteAllGoods();
 
+    @Query("SELECT * FROM table_goodsList")
+    LiveData<List<GoodsList>> getAllGoods();
 
+    @Query("SELECT * FROM table_goodsList WHERE listId = :listId ORDER BY id")
+    LiveData<List<GoodsList>> getGoodsListFromListId(int listId);
 }

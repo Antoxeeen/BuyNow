@@ -10,10 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.antoxeeen.buynow.R;
 import ru.antoxeeen.buynow.repository.MainList;
+import ru.antoxeeen.buynow.viewmodel.GoodsListsViewModel;
 import ru.antoxeeen.buynow.viewmodel.MainListsViewModel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,26 +27,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private MainListsViewModel viewModel;
+    private GoodsListsViewModel goodsListsViewModel;
     FloatingActionButton floating_button_add_list;
     private RecyclerView recyclerView;
     private MainListAdapter adapter;
-    public static final int ADD_GOODS_REQUEST = 1;
-    public static final int EDIT_GOODS_REQUEST = 2;
+    public static final int EDIT_GOODS_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.main_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
+        initVariable();
 
-        adapter = new MainListAdapter();
-        recyclerView.setAdapter(adapter);
-
-        viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
-                .create(MainListsViewModel.class);
         viewModel.getAllMainLists().observe(this, new Observer<List<MainList>>() {
             @Override
             public void onChanged(List<MainList> mainLists) {
@@ -50,17 +47,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        floating_button_add_list = findViewById(R.id.button_add_list);
         floating_button_add_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainList mainList = new MainList("Список");
+                MainList mainList = new MainList("Новый список");
                 viewModel.insertMainList(mainList);
-                Intent intent = new Intent(MainActivity.this, AddEditGoodsActivity.class);
-                intent.putExtra(AddEditGoodsActivity.EXTRA_TITLE, mainList.getName());
-                intent.putExtra(AddEditGoodsActivity.EXTRA_ID, mainList.getId());
-                intent.putExtra(AddEditGoodsActivity.EXTRA_NEW_LIST, 1);
-                startActivityForResult(intent, ADD_GOODS_REQUEST);
             }
         });
 
@@ -84,29 +75,36 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(MainList mainList) {
                 Intent intent = new Intent(MainActivity.this,
                         AddEditGoodsActivity.class);
-                intent.putExtra(AddEditGoodsActivity.EXTRA_ID, mainList.getId());
-                intent.putExtra(AddEditGoodsActivity.EXTRA_TITLE, mainList.getName());
+                int listId = mainList.getId();
+                String listName = mainList.getName();
+                intent.putExtra(AddEditGoodsActivity.EXTRA_ID, listId);
+                intent.putExtra(AddEditGoodsActivity.EXTRA_TITLE, listName);
                 startActivityForResult(intent, EDIT_GOODS_REQUEST);
             }
         });
+    }
+
+    private void initVariable() {
+        recyclerView = findViewById(R.id.main_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        adapter = new MainListAdapter();
+        recyclerView.setAdapter(adapter);
+        floating_button_add_list = findViewById(R.id.button_add_list);
+
+        viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
+                .create(MainListsViewModel.class);
+
+        goodsListsViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
+                .create(GoodsListsViewModel.class);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ADD_GOODS_REQUEST && resultCode == RESULT_OK) {
-            String title = data.getStringExtra(AddEditGoodsActivity.EXTRA_TITLE);
-            MainList mainList = new MainList(title);
-            int id = data.getIntExtra(AddEditGoodsActivity.EXTRA_ID, -1);
-            if (id == -1) {
-                Toast.makeText(this, "Can't be updated", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            mainList.setId(id);
-            viewModel.updateMainList(mainList);
-            Toast.makeText(this, "saved", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == EDIT_GOODS_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == EDIT_GOODS_REQUEST && resultCode == RESULT_OK) {
             int id = data.getIntExtra(AddEditGoodsActivity.EXTRA_ID, -1);
             if (id == -1) {
                 Toast.makeText(this, "Can't be updated", Toast.LENGTH_SHORT).show();

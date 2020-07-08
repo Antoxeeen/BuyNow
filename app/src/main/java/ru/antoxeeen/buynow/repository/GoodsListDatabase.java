@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {MainList.class, GoodsList.class}, version = 2)
+@Database(entities = {MainList.class, GoodsList.class}, version = 8)
 public abstract class GoodsListDatabase extends RoomDatabase {
 
     private static GoodsListDatabase instance;

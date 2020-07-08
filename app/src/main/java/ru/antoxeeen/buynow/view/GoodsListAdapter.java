@@ -4,18 +4,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.antoxeeen.buynow.R;
 import ru.antoxeeen.buynow.repository.GoodsList;
-import ru.antoxeeen.buynow.repository.MainList;
 
-class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.GoodsListHolder> {
-    private List<GoodsList> goodsList = new ArrayList<>();
+
+class GoodsListAdapter extends ListAdapter<GoodsList, GoodsListAdapter.GoodsListHolder> {
+
+    public GoodsListAdapter() {
+        super(DIFF_CALLBACK);
+    }
+
+    public static final DiffUtil.ItemCallback<GoodsList> DIFF_CALLBACK = new DiffUtil.ItemCallback<GoodsList>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull GoodsList oldItem, @NonNull GoodsList newItem) {
+            return oldItem.getId() == newItem.getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull GoodsList oldItem, @NonNull GoodsList newItem) {
+            return oldItem.getGoods().equals(newItem.getGoods());
+        }
+    };
 
     @NonNull
     @Override
@@ -27,21 +40,15 @@ class GoodsListAdapter extends RecyclerView.Adapter<GoodsListAdapter.GoodsListHo
 
     @Override
     public void onBindViewHolder(@NonNull GoodsListHolder holder, int position) {
-        GoodsList currentGoodsList = goodsList.get(position);
+        GoodsList currentGoodsList = getItem(position);
         holder.textViewGoods.setText(currentGoodsList.getGoods());
     }
 
-    public void setList(List<GoodsList> goodsLists) {
-        this.goodsList = goodsLists;
-        notifyDataSetChanged();
+    public GoodsList getGoodsListAt(int position){
+        return getItem(position);
     }
 
-    @Override
-    public int getItemCount() {
-        return goodsList.size();
-    }
-
-    class GoodsListHolder extends RecyclerView.ViewHolder {
+    static class GoodsListHolder extends RecyclerView.ViewHolder {
         private TextView textViewGoods;
 
         public GoodsListHolder(@NonNull View itemView) {

@@ -2,24 +2,31 @@ package ru.antoxeeen.buynow.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.antoxeeen.buynow.R;
 
 import android.content.Intent;
+import android.media.browse.MediaBrowser;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import ru.antoxeeen.buynow.repository.GoodsList;
 import ru.antoxeeen.buynow.viewmodel.GoodsListsViewModel;
@@ -31,71 +38,86 @@ public class AddEditGoodsActivity extends AppCompatActivity {
     private EditText editText_goods;
     private int list_id;
     private String list_name;
-    private ImageView imageView_add_goods;
-    private Button add_goods_button;
+    LiveData<List<GoodsList>> currentGoodsList;
+    List<GoodsList> goodsListsToDaD;
+    private FloatingActionButton button_add_goods;
     private RecyclerView recyclerView;
     private GoodsListsViewModel goodsListViewModel;
     public static final String EXTRA_ID =
             "ru.antoxeeen.buynow.view.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "ru.antoxeeen.buynow.view.EXTRA_TITLE";
-    public static final String EXTRA_NEW_LIST =
-            "ru.antoxeeen.buynow.view.EXTRA_NEW_LIST";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goods);
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
 
-        editText_listName = findViewById(R.id.edit_text_title);
-        editText_goods = findViewById(R.id.edit_text_add_goods);
-        //imageView_add_goods = findViewById(R.id.image_view_add_goods);
-        add_goods_button = findViewById(R.id.add_goods_button);
-
-        recyclerView = findViewById(R.id.goods_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setHasFixedSize(true);
-
-        adapter = new GoodsListAdapter();
-        recyclerView.setAdapter(adapter);
-
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
-        goodsListViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
-                .create(GoodsListsViewModel.class);
+        initVariable();
 
         Intent intent = getIntent();
-        if(intent.hasExtra(EXTRA_NEW_LIST)){
-            setTitle("Edit goods");
-        }
         list_name = intent.getStringExtra(EXTRA_TITLE);
         list_id = intent.getIntExtra(EXTRA_ID, -1);
         editText_listName.setText(list_name);
-        goodsListViewModel.setListId(list_id);
-        setTitle("Add goods");
+        currentGoodsList = goodsListViewModel.getGoodsListFromListId(list_id);
 
-        goodsListViewModel.getAllGoodsList().observe(this, new Observer<List<GoodsList>>() {
+        currentGoodsList.observe(this, new Observer<List<GoodsList>>() {
             @Override
             public void onChanged(List<GoodsList> goodsLists) {
-                adapter.setList(goodsLists);
+                goodsListsToDaD = goodsLists;
+                adapter.submitList(goodsListsToDaD);
             }
         });
 
-        add_goods_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GoodsList goodsList = new GoodsList("name", list_id);
-                goodsListViewModel.insertGoodsList(goodsList);
-                //add_goods();
-            }
-        });
-
-        /*imageView_add_goods.setOnClickListener(new View.OnClickListener() {
+        button_add_goods.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 add_goods();
             }
-        });*/
+        });
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP
+                | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+
+                int fromPosition = viewHolder.getAdapterPosition();
+                int toPosition = target.getAdapterPosition();
+                recyclerView.getAdapter().notifyItemMoved(fromPosition, toPosition);
+                GoodsList goodsList1 = goodsListsToDaD.get(fromPosition);
+                GoodsList goodsList2 = goodsListsToDaD.get(toPosition);
+                String goods1 = goodsList2.getGoods();
+                goodsList2.setGoods(goodsList1.getGoods());
+                goodsList1.setGoods(goods1);
+                goodsListViewModel.updateGoodsList(goodsList2);
+                goodsListViewModel.updateGoodsList(goodsList1);
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                goodsListViewModel.deleteGoodsList(adapter.getGoodsListAt(viewHolder.getAdapterPosition()));
+            }
+        })
+                .attachToRecyclerView(recyclerView);
+
+    }
+
+    private void initVariable() {
+        editText_listName = findViewById(R.id.edit_text_title);
+        editText_goods = findViewById(R.id.edit_text_add_goods);
+        button_add_goods = findViewById(R.id.button_add_goods);
+        recyclerView = findViewById(R.id.goods_recycler_view);
+        adapter = new GoodsListAdapter();
+        goodsListViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
+                .create(GoodsListsViewModel.class);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        setTitle("Edit goods");
     }
 
     private void add_goods() {
@@ -105,7 +127,10 @@ public class AddEditGoodsActivity extends AppCompatActivity {
                     .show();
             return;
         }
-        goodsListViewModel.insertGoodsList(new GoodsList(goods_name, list_id));
+        GoodsList goodsList = new GoodsList(goods_name);
+        goodsList.setListId(list_id);
+        goodsListViewModel.insertGoodsList(goodsList);
+        editText_goods.setText("");
     }
 
     private void save_goods() {
@@ -139,5 +164,5 @@ public class AddEditGoodsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    
 }

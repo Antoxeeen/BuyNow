@@ -20,23 +20,23 @@ public class MainListsViewModel extends AndroidViewModel {
         allMainLists = mainListsRepository.getAllMainLists();
     }
 
-    public void insertMainList(MainList mainList){
+    public void insertMainList(MainList mainList) {
         mainListsRepository.insertMainList(mainList);
     }
 
-    public void updateMainList(MainList mainList){
+    public void updateMainList(MainList mainList) {
         mainListsRepository.updateMainList(mainList);
     }
 
-    public void deleteMainList(MainList mainList){
+    public void deleteMainList(MainList mainList) {
         mainListsRepository.deleteMainList(mainList);
     }
 
-    public void deleteAllMainList(){
+    public void deleteAllMainList() {
         mainListsRepository.deleteAllMainList();
     }
 
-    public LiveData<List<MainList>> getAllMainLists(){
+    public LiveData<List<MainList>> getAllMainLists() {
         return allMainLists;
     }
 }

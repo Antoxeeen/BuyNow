@@ -2,11 +2,7 @@ package ru.antoxeeen.buynow.repository;
 
 import android.app.Application;
 import android.os.AsyncTask;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import androidx.lifecycle.LiveData;
 
 public class MainListsRepository {
