@@ -31,15 +31,16 @@ import java.util.Objects;
 import ru.antoxeeen.buynow.repository.GoodsList;
 import ru.antoxeeen.buynow.viewmodel.GoodsListsViewModel;
 
-public class AddEditGoodsActivity extends AppCompatActivity {
+public class AddEditGoodsActivity extends AppCompatActivity
+        implements EditGoodsDialog.EditGoodsDialogListener {
 
     private GoodsListAdapter adapter;
     private EditText editText_listName;
     private EditText editText_goods;
     private int list_id;
     private String list_name;
-    LiveData<List<GoodsList>> currentGoodsList;
-    List<GoodsList> goodsListsToDaD;
+    private LiveData<List<GoodsList>> currentGoodsList;
+    private List<GoodsList> goodsListsToDaD;
     private FloatingActionButton button_add_goods;
     private RecyclerView recyclerView;
     private GoodsListsViewModel goodsListViewModel;
@@ -52,7 +53,8 @@ public class AddEditGoodsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goods);
-        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
+        Objects.requireNonNull(getSupportActionBar())
+                .setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
 
         initVariable();
 
@@ -70,6 +72,13 @@ public class AddEditGoodsActivity extends AppCompatActivity {
             }
         });
 
+        adapter.setOnItemClickListener(new GoodsListAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(GoodsList goodsList) {
+                openDialog(goodsList);
+            }
+        });
+
         button_add_goods.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,7 +90,9 @@ public class AddEditGoodsActivity extends AppCompatActivity {
                 | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
 
                 int fromPosition = viewHolder.getAdapterPosition();
                 int toPosition = target.getAdapterPosition();
@@ -164,5 +175,23 @@ public class AddEditGoodsActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
+    public void openDialog(GoodsList goodsList) {
+        EditGoodsDialog editGoodsDialog = new EditGoodsDialog();
+        Bundle args = new Bundle();
+        args.putString("goods_name", goodsList.getGoods());
+        args.putInt("goods_listId", goodsList.getListId());
+        args.putInt("goods_id", goodsList.getId());
+
+        editGoodsDialog.setArguments(args);
+        editGoodsDialog.show(getSupportFragmentManager(), "edit");
+    }
+
+    @Override
+    public void applyTexts(String goods_name, int list_id, int id) {
+        GoodsList goodsList = new GoodsList(goods_name);
+        goodsList.setListId(list_id);
+        goodsList.setId(id);
+        goodsListViewModel.updateGoodsList(goodsList);
+    }
 }

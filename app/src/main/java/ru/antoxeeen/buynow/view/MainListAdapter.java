@@ -17,6 +17,7 @@ import ru.antoxeeen.buynow.R;
 import ru.antoxeeen.buynow.repository.MainList;
 
 class MainListAdapter extends ListAdapter<MainList, MainListAdapter.MainListHolder> {
+
     private OnItemClickListener listener;
 
     public MainListAdapter() {

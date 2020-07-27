@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BuyNow</string>
     <string name="text">Text</string>
+    <string name="goods">goods</string>
 </resources>

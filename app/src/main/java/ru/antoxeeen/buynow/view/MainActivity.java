@@ -27,7 +27,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private MainListsViewModel viewModel;
-    private GoodsListsViewModel goodsListsViewModel;
     FloatingActionButton floating_button_add_list;
     private RecyclerView recyclerView;
     private MainListAdapter adapter;
@@ -39,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         initVariable();
+
+
 
         viewModel.getAllMainLists().observe(this, new Observer<List<MainList>>() {
             @Override
@@ -95,9 +96,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
                 .create(MainListsViewModel.class);
-
-        goodsListsViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication())
-                .create(GoodsListsViewModel.class);
     }
 
     @Override

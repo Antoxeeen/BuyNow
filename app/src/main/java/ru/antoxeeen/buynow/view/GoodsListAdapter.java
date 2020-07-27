@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
@@ -13,6 +14,7 @@ import ru.antoxeeen.buynow.repository.GoodsList;
 
 
 class GoodsListAdapter extends ListAdapter<GoodsList, GoodsListAdapter.GoodsListHolder> {
+    private onItemClickListener listener;
 
     public GoodsListAdapter() {
         super(DIFF_CALLBACK);
@@ -44,16 +46,35 @@ class GoodsListAdapter extends ListAdapter<GoodsList, GoodsListAdapter.GoodsList
         holder.textViewGoods.setText(currentGoodsList.getGoods());
     }
 
-    public GoodsList getGoodsListAt(int position){
+    public GoodsList getGoodsListAt(int position) {
         return getItem(position);
     }
 
-    static class GoodsListHolder extends RecyclerView.ViewHolder {
+    class GoodsListHolder extends RecyclerView.ViewHolder {
         private TextView textViewGoods;
 
         public GoodsListHolder(@NonNull View itemView) {
             super(itemView);
             textViewGoods = itemView.findViewById(R.id.text_view_goods);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(getItem(position));
+                    }
+                }
+            });
         }
     }
+
+    public interface onItemClickListener{
+        void onItemClick(GoodsList goodsList);
+    }
+
+    public void setOnItemClickListener(onItemClickListener listener) {
+        this.listener = listener;
+    }
+
 }
